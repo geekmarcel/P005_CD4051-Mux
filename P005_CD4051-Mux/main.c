@@ -35,14 +35,11 @@
 ***************************************************************************/
 void Setup()
 {
-	/* Setup Port B */
-	/* Pins 0,1,2 as outputs */
-	DDRB = 0b00000111;
-	
-	/* Setup PORTD */
-	/* Set all pins as output for now */
-	DDRD = 0b11111111;
+	/* Setup Port D */
+	/* Pins 0,1,2 as outputs, pin 3 till 5 as input */
+	DDRD = 0b00000111;
 }
+
 
 /***************************************************************************
 *  Function:		Main(void)
@@ -54,6 +51,6 @@ int main(void)
 {
     while(1)
     {
-        //TODO:: Please write your application code 
+        
     }
 }
