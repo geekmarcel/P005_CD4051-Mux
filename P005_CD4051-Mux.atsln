@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "P005_CD4051-Mux", "P005_CD4051-Mux\P005_CD4051-Mux.cproj", "{C7A6327C-5147-40FE-8736-F7C0CF980AA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7A6327C-5147-40FE-8736-F7C0CF980AA2}.Debug|AVR.ActiveCfg = Debug|AVR
+		{C7A6327C-5147-40FE-8736-F7C0CF980AA2}.Debug|AVR.Build.0 = Debug|AVR
+		{C7A6327C-5147-40FE-8736-F7C0CF980AA2}.Release|AVR.ActiveCfg = Release|AVR
+		{C7A6327C-5147-40FE-8736-F7C0CF980AA2}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
