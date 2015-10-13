@@ -5,7 +5,7 @@
  * IDE:			Atmel Studio 6.2
  *
  * Name:    		main.c
- * Purpose: 		LCD16x2 Example
+ * Purpose: 		CD4051 Example
  * Date:			09-10-2015
  * Author:		Marcel van der Ven
  *

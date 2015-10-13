@@ -38,6 +38,7 @@ struct CD4051
 	BOOL isInitialized;
 	BOOL setupCompleted;
 } cd4051;
+
 /************************************************************************/
 /* Functions				                                                                  */
 /************************************************************************/
@@ -55,6 +56,10 @@ void Initialize(volatile BYTE* inOutOutputReg,
 				volatile BYTE* selectCPort,
 				BYTE selectCPin)
 {
+	/* Setup Port directions */
+	
+	
+	/* Initialize structure */
 	cd4051.inOut.pin = inOutPin;
 	//cd4051.inOut
 	
@@ -75,5 +80,17 @@ void SetupChannels()
 ***************************************************************************/
 void ScanChannels(void)
 {
+	
+}
+
+/***************************************************************************
+*  Function:		ScanChannels(void)
+*  Description:
+*  Receives:		Nothing
+*  Returns:		Nothing
+***************************************************************************/
+void ScanInputChannel(ChannelNo channel, ChannelType type)
+{
+	/* Set channel address */
 	
 }
