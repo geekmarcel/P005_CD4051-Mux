@@ -51,6 +51,10 @@ int main(void)
 {
     while(1)
     {
-        
+        /* Read Keypad, the keypad uses channel 0 to 6*/
+		for(int i = 0; i < 7; i++)
+		{
+			
+		}
     }
 }

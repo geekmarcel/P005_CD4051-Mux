@@ -27,17 +27,25 @@ enum ChannelType{INPUT, OUTPUT};
 /************************************************************************/
 /* Structures				                                                                  */
 /************************************************************************/		
-struct Channel
-{
-	ChannelNo channel
-	BOOL isInput;
-}
-
-struct Channels
-{
-	Channel[8] channels;
-}channels;
 
 
+/************************************************************************/
+/* Function prototypes		                                                                  */
+/************************************************************************/
+void Initialize(volatile BYTE* inOutOutputReg,
+				volatile BYTE* inOutDirReg,
+				volatile BYTE* inOutInputReg,
+				BYTE inOutPin,
+				volatile BYTE* inhPort,
+				BYTE inhPin,
+				volatile BYTE* selectAPort,
+				BYTE selectAPin,
+				volatile BYTE* selectBPort,
+				BYTE selectBPin,
+				volatile BYTE* selectCPort,
+				BYTE selectCPin);
+void WriteChannel(ChannelNo channel, BOOL channelValue);
+BOOL ReadChannel(ChannelNo channel);
+void SelectChannel(ChannelNo channel);
 
 #endif /* CD4051_H_ */
