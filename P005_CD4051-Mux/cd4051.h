@@ -19,10 +19,16 @@
 #define CD4051_H_
 
 /************************************************************************/
+/* Includes				                                                                  */
+/************************************************************************/
+#include "common.h"
+
+
+/************************************************************************/
 /* Enumerations			                                                                  */
 /************************************************************************/
-enum ChannelNo{ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN};
-enum ChannelType{INPUT, OUTPUT};
+typedef enum {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN}	ChannelNoType;
+typedef enum {INPUT, OUTPUT}							ChannelType;
 	
 /************************************************************************/
 /* Structures				                                                                  */
@@ -44,8 +50,8 @@ void Initialize(volatile BYTE* inOutOutputReg,
 				BYTE selectBPin,
 				volatile BYTE* selectCPort,
 				BYTE selectCPin);
-void WriteChannel(ChannelNo channel, BOOL channelValue);
-BOOL ReadChannel(ChannelNo channel);
-void SelectChannel(ChannelNo channel);
+void WriteChannel(ChannelNoType channel, BOOL channelValue);
+BOOL ReadChannel(ChannelNoType channel);
+void SelectChannel(ChannelNoType channel);
 
 #endif /* CD4051_H_ */

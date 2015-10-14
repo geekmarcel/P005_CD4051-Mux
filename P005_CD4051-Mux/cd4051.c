@@ -49,18 +49,18 @@ struct CD4051
 /************************************************************************/
 
 /***************************************************************************
-*  Function:		InitializeLcd(volatile BYTE* inOutOutputReg,
-						   volatile BYTE* inOutDirReg,
-						   volatile BYTE* inOutInputReg,
-						   BYTE inOutPin,
-						   volatile BYTE* inhPort,
-						   BYTE inhPin,
-						   volatile BYTE* selectAPort,
-						   BYTE selectAPin,
-						   volatile BYTE* selectBPort,
-						   BYTE selectBPin,
-						   volatile BYTE* selectCPort,
-*						   BYTE selectCPin)
+*  Function:		InitializeMux(volatile BYTE* inOutOutputReg,
+					            volatile BYTE* inOutDirReg,
+						     volatile BYTE* inOutInputReg,
+					            BYTE inOutPin,
+					            volatile BYTE* inhPort,
+					            BYTE inhPin,
+					            volatile BYTE* selectAPort,
+					            BYTE selectAPin,
+					            volatile BYTE* selectBPort,
+					            BYTE selectBPin,
+					            volatile BYTE* selectCPort,
+*					            BYTE selectCPin)
 *  Description:		Initializes the CD4051 structure with the given register addresses and port numbers.
 *				After that the CD4051 API can be used without specifying addresses or pin numbers.
 *
@@ -107,7 +107,7 @@ void Initialize(volatile BYTE* inOutOutputReg,
 	cd4051.selectC.pin = selectCPin;
 	
 	/* Set initialized to true */
-	cd4051.isInitialized = true;
+	cd4051.isInitialized = TRUE;
 }
 
 /***************************************************************************
@@ -123,7 +123,7 @@ void Initialize(volatile BYTE* inOutOutputReg,
 *				BOOL channelValue		:	Value to set.
 *  Returns:		Nothing
 ***************************************************************************/
-void WriteChannel(ChannelNo channel, BOOL channelValue)
+void WriteChannel(ChannelNoType channel, BOOL channelValue)
 {
 	/* Disable multiplexer */
 	CLEAR_BIT(cd4051.inh.port, cd4051.inh.pin);
@@ -156,7 +156,7 @@ void WriteChannel(ChannelNo channel, BOOL channelValue)
 *  Receives:		ChannelNo channel		:	Channel to select.
 *  Returns:		Current state of the channel, high (TRUE) or low (FALSE).
 ***************************************************************************/
-BOOL ReadChannel(ChannelNo channel)
+BOOL ReadChannel(ChannelNoType channel)
 {
 	/* Disable multiplexer */
 	CLEAR_BIT(cd4051.inh.port, cd4051.inh.pin);
@@ -173,7 +173,7 @@ BOOL ReadChannel(ChannelNo channel)
 	/* Read Channel */
 	/* Shift the read value to the first bit position, this depends on which pin the inOut signal is connected */
 	/* And it with 0x01, to get only the first bit and ignore the others */
-	BOOL inputVal = (cd4051.inOutInputReg >> cd4051.inOut.pin) & 0x01;	
+	BOOL inputVal = (*cd4051.inOutInputReg >> cd4051.inOut.pin) & 0x01;	
 	
 	return inputVal;
 }
@@ -186,12 +186,12 @@ BOOL ReadChannel(ChannelNo channel)
 *  Receives:		ChannelNo channel		:	Channel to select
 *  Returns:		Nothing
 ***************************************************************************/
-void SelectChannel(ChannelNo channel)
+void SelectChannel(ChannelNoType channel)
 {
 	if(cd4051.isInitialized == TRUE)
 	{
 		/* Set Select signal A */
-		if(channel & 0x01 == 0x01)
+		if((channel & 0x01) == 0x01)
 		{
 			SET_BIT(cd4051.selectA.port, cd4051.selectA.pin);
 		}
@@ -201,7 +201,7 @@ void SelectChannel(ChannelNo channel)
 		}
 		
 		/* Set Select signal B */
-		if(channel & 0x02 == 0x02)
+		if((channel & 0x02) == 0x02)
 		{
 			SET_BIT(cd4051.selectB.port, cd4051.selectB.pin);
 		}
@@ -211,7 +211,7 @@ void SelectChannel(ChannelNo channel)
 		}
 		
 		/* Set Select signal C */
-		if(channel & 0x04 == 0x04)
+		if((channel & 0x04) == 0x04)
 		{
 			SET_BIT(cd4051.selectC.port, cd4051.selectC.pin);
 		}
