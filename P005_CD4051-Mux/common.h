@@ -11,9 +11,10 @@
  *
  * Hardware setup:	
  *
- * Releases:		Oct 9 2015 - 1.1:	Added High - Low defines
+ * Releases:		Oct 18 2015 - 1.2:		Changed the SET and CLEAR bit-macro functions
+ *				Oct 9 2015 - 1.1:		Added High - Low defines
  *				
- *				Oct. 1 2015 - 1.0 Initial release
+ *				Oct. 1 2015 - 1.0		Initial release
  * Note(s):
  *--------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

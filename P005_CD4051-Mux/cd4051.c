@@ -59,8 +59,8 @@ struct CD4051
 *				After that the CD4051 API can be used without specifying addresses or pin numbers.
 *
 *  Receives:		BYTE* controlDirPort	:	Data direction port address
-*				BYTE* controlOutputPort:	Output port address
 *				BYTE* controlInputPort	:	Input port address
+*				BYTE* controlOutputPort:	Output port address
 *				BYTE inOutPin,			:	inOut pin number	
 *				BYTE inhPin,			:	Inhibit pin number	
 *				BYTE selectAPin		:	SelectA pin number		
