@@ -38,16 +38,14 @@ typedef enum {INPUT, OUTPUT}							ChannelType;
 /************************************************************************/
 /* Function prototypes		                                                                  */
 /************************************************************************/
-void InitializeMux(volatile BYTE* inOutDirReg,
-				   volatile BYTE* inOutInputReg,
-				   volatile BYTE* inOutPort,
-				   BYTE inOutPin,
-				   volatile BYTE* controlOutputPort,
-				   volatile BYTE* controlInputPort,
-				   BYTE inhPin,
-				   BYTE selectAPin,
-				   BYTE selectBPin,
-				   BYTE selectCPin);
+void InitializeCD4051(volatile BYTE* controlDirPort,
+					  volatile BYTE* controlInputPort,	
+					  volatile BYTE* controlOutputPort,
+				      BYTE inOutPin,
+				      BYTE inhPin,
+				      BYTE selectAPin,
+				      BYTE selectBPin,
+				      BYTE selectCPin);
 void WriteChannel(ChannelNoType channel, BOOL channelValue);
 BOOL ReadChannel(ChannelNoType channel);
 void SelectChannel(ChannelNoType channel);

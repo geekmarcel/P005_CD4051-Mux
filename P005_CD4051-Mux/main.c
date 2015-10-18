@@ -51,16 +51,14 @@ int main(void)
 {
 	/* Setup and initialization */
 	Setup();
-	InitializeMux(&DDRD,
-				  &PIND,
-				  &PORTD,
-				  PORTD4,
-				  &PORTD,
-				  &PIND,
-				  PORTD3,
-				  PORTD0,
-				  PORTD1,
-				  PORTD2);
+	InitializeCD4051(&DDRD,
+				     &PIND,
+				     &PORTD,
+				     PORTD4,
+				     PORTD3,
+				     PORTD0,
+				     PORTD1,
+				     PORTD2);
 	
     while(1)
     {
@@ -74,7 +72,7 @@ int main(void)
 		}
 		
 		/* Using the inputState variable determine which LED should go on */
-		/* We can only switch on one LED at a time, so if both buttons are pressed only the first LED will go on */
+		/* We can only switch on 1 LED at a time, if both buttons are pressed only the first LED will go on */
 		if((inputState & 0x01) == 0x01)		
 			WriteChannel(TWO, HIGH);
 		else if((inputState & 0x02) == 0x02)	

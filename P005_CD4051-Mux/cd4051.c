@@ -47,61 +47,55 @@ struct CD4051
 /************************************************************************/
 
 /***************************************************************************
-*  Function:		InitializeMux(volatile BYTE* inOutDirReg,
-						     volatile BYTE* inOutInputReg,
-						     volatile BYTE* inOutPort,
-					            BYTE inOutPin,
-					            volatile BYTE* controlOutputPort,
-					            volatile BYTE* controlInputPort,
-					            BYTE inhPin,
-					            BYTE selectAPin,
-					            BYTE selectBPin,
-*					            BYTE selectCPin)
+*  Function:		InitializeCD4051(volatile BYTE* controlDirPort,
+							   volatile BYTE* controlInputPort,
+						          volatile BYTE* controlOutputPort,
+					                 BYTE inOutPin,
+					                 BYTE inhPin,
+					                 BYTE selectAPin,
+					                 BYTE selectBPin,
+*					                 BYTE selectCPin)
 *  Description:		Initializes the CD4051 structure with the given register addresses and port numbers.
 *				After that the CD4051 API can be used without specifying addresses or pin numbers.
 *
-*  Receives:		BYTE* inOutDirReg		:	Data direction port for the inOut pin
-*				BYTE* inOutInputReg	:	Input port for the inOutPin
-*				BYTE* inOutPort		:	Output port address for the inOut pin
-*				BYTE inOutPin,			:	inOut pin number
-*				BYTE* controlOutputPort:	Output Port address for control signals
-*				BYTE* controlInputPort	:	Input port address for control signals 
-*				BYTE* inhPort			:	Inhibit port address			
+*  Receives:		BYTE* controlDirPort	:	Data direction port address
+*				BYTE* controlOutputPort:	Output port address
+*				BYTE* controlInputPort	:	Input port address
+*				BYTE inOutPin,			:	inOut pin number	
 *				BYTE inhPin,			:	Inhibit pin number	
-*				BYTE* selectAPort		:	SelectA port address
 *				BYTE selectAPin		:	SelectA pin number		
-*				BYTE* selectBPort		:	SelectB port address	
 *				BYTE selectBPin		:	SelectB pin number
-*				BYTE* selectCPort		:	SelectC port address
 *				BYTE selectCPin		:	SelectC pin number
 
 *  Returns:		Nothing
 ***************************************************************************/
-void InitializeMux(volatile BYTE* inOutDirReg,
-				   volatile BYTE* inOutInputReg,
-				   volatile BYTE* inOutPort,
-				   BYTE inOutPin,
-				   volatile BYTE* controlOutputPort,
-				   volatile BYTE* controlInputPort,
-				   BYTE inhPin,
-				   BYTE selectAPin,
-				   BYTE selectBPin,
-				   BYTE selectCPin)
+void InitializeCD4051(volatile BYTE* controlDirPort,
+				      volatile BYTE* controlInputPort,
+				      volatile BYTE* controlOutputPort,
+				      BYTE inOutPin,
+				      BYTE inhPin,
+				      BYTE selectAPin,
+				      BYTE selectBPin,
+				      BYTE selectCPin)
 {
 	/* Initialize structure */
-	cd4051.inOut.dirPort = inOutDirReg;
-	cd4051.inOut.inputPort = inOutInputReg;
-	cd4051.inOut.outputPort = inOutPort;
+	cd4051.inOut.dirPort = controlDirPort;
+	cd4051.inOut.outputPort = controlOutputPort;
+	cd4051.inOut.inputPort = controlInputPort;
 	cd4051.inOut.pin = inOutPin;
+	
 	cd4051.inh.outputPort = controlOutputPort;
 	cd4051.inh.inputPort = controlInputPort;
 	cd4051.inh.pin = inhPin;
+	
 	cd4051.selectA.outputPort = controlOutputPort;
 	cd4051.selectA.inputPort = controlInputPort;
 	cd4051.selectA.pin = selectAPin;
+	
 	cd4051.selectB.outputPort = controlOutputPort;
 	cd4051.selectB.inputPort = controlInputPort;
 	cd4051.selectB.pin = selectBPin;
+	
 	cd4051.selectC.outputPort = controlOutputPort;
 	cd4051.selectC.inputPort = controlInputPort;
 	cd4051.selectC.pin = selectCPin;
@@ -184,8 +178,8 @@ BOOL ReadChannel(ChannelNoType channel)
 		_delay_us(2);
 	
 		/* Read Channel */
-		/* Shift the read value to the first bit position, this depends on which pin the inOut signal is connected */
-		/* And it with 0x01, to get only the first bit and ignore the others */
+		/* Shift the read value to the first bit position */
+		/* And the value with 0x01, to get only the first bit and ignore the others */
 		inputVal = (*cd4051.inOut.inputPort >> cd4051.inOut.pin) & 0x01;	
 	}
 	return inputVal;
