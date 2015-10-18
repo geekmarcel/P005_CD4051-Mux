@@ -38,7 +38,7 @@ void Setup()
 {
 	/* Setup Port D */
 	/* Pins 0,1,2 as outputs, pin 3 till 5 as input */
-	DDRD = 0b00000111;
+	DDRD = 0b00001111;
 }
 
 /***************************************************************************
@@ -51,7 +51,16 @@ int main(void)
 {
 	/* Setup and initialization */
 	Setup();
-	//InitializeMux()
+	InitializeMux(&DDRD,
+				  &PIND,
+				  &PORTD,
+				  PORTD4,
+				  &PORTD,
+				  &PIND,
+				  PORTD3,
+				  PORTD0,
+				  PORTD1,
+				  PORTD2);
 	
     while(1)
     {
@@ -61,20 +70,17 @@ int main(void)
 		for(int i = 0; i < 2; i++)
 		{
 			/* Read the channel and store the current state on the bit position in the inputState variable */
-			inputState |= ReadChannel(i) << i;
+			inputState |= (ReadChannel(i) << i);
 		}
 		
-		/* Using the inputState variable determine which LED or LEDs should go on */
+		/* Using the inputState variable determine which LED should go on */
+		/* We can only switch on one LED at a time, so if both buttons are pressed only the first LED will go on */
 		if((inputState & 0x01) == 0x01)		
 			WriteChannel(TWO, HIGH);
-		if((inputState & 0x02) == 0x02)	
+		else if((inputState & 0x02) == 0x02)	
 			WriteChannel(THREE, HIGH);
-		
-		/* if none of the LEDs are on then turn on LED on channel 7 */
-		if(inputState == 0x00)
-			WriteChannel(SEVEN, HIGH);
 				
 		/* Delay a short while */
-		_delay_ms(10);
+		_delay_ms(50);
     }
 }

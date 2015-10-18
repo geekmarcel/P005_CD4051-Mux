@@ -37,9 +37,11 @@ typedef	uint8_t		BOOL;
 /************************************************************************/
 /* Structures				                                                                  */
 /************************************************************************/
-struct ControlPin
+struct PinSettings
 {
-	volatile BYTE* port;
+	volatile BYTE* outputPort;
+	volatile BYTE* inputPort;
+	volatile BYTE* dirPort;
 	volatile BYTE pin;
 };
 
@@ -47,9 +49,8 @@ struct ControlPin
 /************************************************************************/
 /* Macros				                                                                  */
 /************************************************************************/
-#define SET_BIT(y, mask)        ( *y |=  (mask) )
-#define CLEAR_BIT(y, mask)      ( *y &= ~(mask) )
-#define FLIP_BIT(y, mask)       ( *y ^=  (mask) )
+#define SET_BIT(outputPort, inputPort, bit)       ( *outputPort =  (*inputPort | (1 << bit)) )
+#define CLEAR_BIT(outputPort, inputPort, bit)     ( *outputPort =  (*inputPort & ~(1 << bit)) )
 
 
 /************************************************************************/

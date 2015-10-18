@@ -24,6 +24,7 @@
 /************************************************************************/
 #include "cd4051.h"
 #include "common.h"
+#include "util/delay.h"
 
 
 /************************************************************************/
@@ -31,14 +32,11 @@
 /************************************************************************/
 struct CD4051
 {
-	volatile BYTE* inOutOutputReg;
-	volatile BYTE* inOutDirReg;
-	volatile BYTE* inOutInputReg;
-	struct ControlPin inOut;
-	struct ControlPin inh;
-	struct ControlPin selectA;
-	struct ControlPin selectB;
-	struct ControlPin selectC;
+	struct PinSettings inOut;
+	struct PinSettings inh;
+	struct PinSettings selectA;
+	struct PinSettings selectB;
+	struct PinSettings selectC;
 	
 	/* Specifies if the structure is initialized with the register addresses and pin numbers */
 	BOOL isInitialized;
@@ -49,25 +47,25 @@ struct CD4051
 /************************************************************************/
 
 /***************************************************************************
-*  Function:		InitializeMux(volatile BYTE* inOutOutputReg,
-					            volatile BYTE* inOutDirReg,
+*  Function:		InitializeMux(volatile BYTE* inOutDirReg,
 						     volatile BYTE* inOutInputReg,
+						     volatile BYTE* inOutPort,
 					            BYTE inOutPin,
-					            volatile BYTE* inhPort,
+					            volatile BYTE* controlOutputPort,
+					            volatile BYTE* controlInputPort,
 					            BYTE inhPin,
-					            volatile BYTE* selectAPort,
 					            BYTE selectAPin,
-					            volatile BYTE* selectBPort,
 					            BYTE selectBPin,
-					            volatile BYTE* selectCPort,
 *					            BYTE selectCPin)
 *  Description:		Initializes the CD4051 structure with the given register addresses and port numbers.
 *				After that the CD4051 API can be used without specifying addresses or pin numbers.
 *
-*  Receives:		BYTE* inOutOutputReg	:	Dataregister port address for the inOut pin
-*				BYTE* inOutDirReg		:	Data direction register for the inOut pin
-*				BYTE* inOutInputReg	:	Input register for the inOutPin
-*				BYTE inOutPin,			:	inOut pin number	
+*  Receives:		BYTE* inOutDirReg		:	Data direction port for the inOut pin
+*				BYTE* inOutInputReg	:	Input port for the inOutPin
+*				BYTE* inOutPort		:	Output port address for the inOut pin
+*				BYTE inOutPin,			:	inOut pin number
+*				BYTE* controlOutputPort:	Output Port address for control signals
+*				BYTE* controlInputPort	:	Input port address for control signals 
 *				BYTE* inhPort			:	Inhibit port address			
 *				BYTE inhPin,			:	Inhibit pin number	
 *				BYTE* selectAPort		:	SelectA port address
@@ -79,31 +77,33 @@ struct CD4051
 
 *  Returns:		Nothing
 ***************************************************************************/
-void Initialize(volatile BYTE* inOutOutputReg,
-				volatile BYTE* inOutDirReg,
-				volatile BYTE* inOutInputReg,
-				BYTE inOutPin,
-				volatile BYTE* inhPort,
-				BYTE inhPin,
-				volatile BYTE* selectAPort,
-				BYTE selectAPin,
-				volatile BYTE* selectBPort,
-				BYTE selectBPin,
-				volatile BYTE* selectCPort,
-				BYTE selectCPin)
+void InitializeMux(volatile BYTE* inOutDirReg,
+				   volatile BYTE* inOutInputReg,
+				   volatile BYTE* inOutPort,
+				   BYTE inOutPin,
+				   volatile BYTE* controlOutputPort,
+				   volatile BYTE* controlInputPort,
+				   BYTE inhPin,
+				   BYTE selectAPin,
+				   BYTE selectBPin,
+				   BYTE selectCPin)
 {
 	/* Initialize structure */
-	cd4051.inOutOutputReg = inOutOutputReg;
-	cd4051.inOutDirReg = inOutDirReg;
-	cd4051.inOutInputReg = inOutInputReg;
+	cd4051.inOut.dirPort = inOutDirReg;
+	cd4051.inOut.inputPort = inOutInputReg;
+	cd4051.inOut.outputPort = inOutPort;
 	cd4051.inOut.pin = inOutPin;
-	cd4051.inh.port = inhPort;
+	cd4051.inh.outputPort = controlOutputPort;
+	cd4051.inh.inputPort = controlInputPort;
 	cd4051.inh.pin = inhPin;
-	cd4051.selectA.port = selectAPort;
+	cd4051.selectA.outputPort = controlOutputPort;
+	cd4051.selectA.inputPort = controlInputPort;
 	cd4051.selectA.pin = selectAPin;
-	cd4051.selectB.port = selectBPort;
+	cd4051.selectB.outputPort = controlOutputPort;
+	cd4051.selectB.inputPort = controlInputPort;
 	cd4051.selectB.pin = selectBPin;
-	cd4051.selectC.port = selectCPort;
+	cd4051.selectC.outputPort = controlOutputPort;
+	cd4051.selectC.inputPort = controlInputPort;
 	cd4051.selectC.pin = selectCPin;
 	
 	/* Set initialized to true */
@@ -125,26 +125,32 @@ void Initialize(volatile BYTE* inOutOutputReg,
 ***************************************************************************/
 void WriteChannel(ChannelNoType channel, BOOL channelValue)
 {
-	/* Disable multiplexer */
-	CLEAR_BIT(cd4051.inh.port, cd4051.inh.pin);
-	
-	/* Set channel address */
-	SelectChannel(channel);
-	
-	/* Set InOut direction to output */
-	SET_BIT(cd4051.inOutDirReg, cd4051.inOut.pin);
-	
-	/* Enable multiplexer */
-	SET_BIT(cd4051.inh.port, cd4051.inh.pin);
-	
-	/* Set value to channel */
-	if(channelValue == TRUE)
+	if(cd4051.isInitialized == TRUE)
 	{
-		SET_BIT(cd4051.inOutOutputReg, cd4051.inOut.pin);
-	}
-	else
-	{
-		CLEAR_BIT(cd4051.inOutOutputReg, cd4051.inOut.pin);
+		/* Disable multiplexer, inhibit is low active*/
+		SET_BIT(cd4051.inh.outputPort, cd4051.inh.inputPort, cd4051.inh.pin);
+	
+		/* Set channel address */
+		SelectChannel(channel);
+	
+		/* Set InOut direction to output */
+		SET_BIT(cd4051.inOut.dirPort, cd4051.inOut.dirPort, cd4051.inOut.pin);
+	
+		/* Enable multiplexer, inhibit is low active */
+		CLEAR_BIT(cd4051.inh.outputPort, cd4051.inh.inputPort, cd4051.inh.pin);
+	
+		/* Delay a short while so the port can switch and the chip can be enabled (Propagation Delay Inhibit)*/
+		_delay_us(2);
+		
+		/* Set value to channel */
+		if(channelValue == TRUE)
+		{
+			SET_BIT(cd4051.inOut.outputPort, cd4051.inOut.inputPort, cd4051.inOut.pin);
+		}
+		else
+		{
+			CLEAR_BIT(cd4051.inOut.outputPort, cd4051.inOut.inputPort, cd4051.inOut.pin);
+		}
 	}
 }
 
@@ -158,23 +164,30 @@ void WriteChannel(ChannelNoType channel, BOOL channelValue)
 ***************************************************************************/
 BOOL ReadChannel(ChannelNoType channel)
 {
-	/* Disable multiplexer */
-	CLEAR_BIT(cd4051.inh.port, cd4051.inh.pin);
+	BOOL inputVal = 0;
 	
-	/* Set channel address */
-	SelectChannel(channel);
+	if(cd4051.isInitialized == TRUE)
+	{
+		/* Disable multiplexer, inhibit is low active */
+		SET_BIT(cd4051.inh.outputPort, cd4051.inh.inputPort, cd4051.inh.pin);
 	
-	/* Set InOut direction to input */
-	CLEAR_BIT(cd4051.inOutDirReg, cd4051.inOut.pin);
+		/* Set channel address */
+		SelectChannel(channel);
 	
-	/* Enable multiplexer */
-	SET_BIT(cd4051.inh.port, cd4051.inh.pin);
+		/* Set InOut direction to input */
+		CLEAR_BIT(cd4051.inOut.dirPort, cd4051.inOut.dirPort, cd4051.inOut.pin);
 	
-	/* Read Channel */
-	/* Shift the read value to the first bit position, this depends on which pin the inOut signal is connected */
-	/* And it with 0x01, to get only the first bit and ignore the others */
-	BOOL inputVal = (*cd4051.inOutInputReg >> cd4051.inOut.pin) & 0x01;	
+		/* Enable multiplexer, inhibit is low active */
+		CLEAR_BIT(cd4051.inh.outputPort, cd4051.inh.inputPort, cd4051.inh.pin);
 	
+		/* Delay a short while so the port can switch and the chip can be enabled (Propagation Delay Inhibit)*/
+		_delay_us(2);
+	
+		/* Read Channel */
+		/* Shift the read value to the first bit position, this depends on which pin the inOut signal is connected */
+		/* And it with 0x01, to get only the first bit and ignore the others */
+		inputVal = (*cd4051.inOut.inputPort >> cd4051.inOut.pin) & 0x01;	
+	}
 	return inputVal;
 }
 
@@ -193,31 +206,31 @@ void SelectChannel(ChannelNoType channel)
 		/* Set Select signal A */
 		if((channel & 0x01) == 0x01)
 		{
-			SET_BIT(cd4051.selectA.port, cd4051.selectA.pin);
+			SET_BIT(cd4051.selectA.outputPort, cd4051.selectA.inputPort, cd4051.selectA.pin);
 		}
 		else
 		{
-			CLEAR_BIT(cd4051.selectA.port, cd4051.selectA.pin);
+			CLEAR_BIT(cd4051.selectA.outputPort, cd4051.selectA.inputPort, cd4051.selectA.pin);
 		}
 		
 		/* Set Select signal B */
 		if((channel & 0x02) == 0x02)
 		{
-			SET_BIT(cd4051.selectB.port, cd4051.selectB.pin);
+			SET_BIT(cd4051.selectB.outputPort, cd4051.selectB.inputPort, cd4051.selectB.pin);
 		}
 		else
 		{
-			CLEAR_BIT(cd4051.selectB.port, cd4051.selectB.pin);
+			CLEAR_BIT(cd4051.selectB.outputPort, cd4051.selectB.inputPort, cd4051.selectB.pin);
 		}
 		
 		/* Set Select signal C */
 		if((channel & 0x04) == 0x04)
 		{
-			SET_BIT(cd4051.selectC.port, cd4051.selectC.pin);
+			SET_BIT(cd4051.selectC.outputPort, cd4051.selectC.inputPort, cd4051.selectC.pin);
 		}
 		else
 		{
-			CLEAR_BIT(cd4051.selectC.port, cd4051.selectC.pin);
+			CLEAR_BIT(cd4051.selectC.outputPort, cd4051.selectC.inputPort, cd4051.selectC.pin);
 		}
 	}
 }
