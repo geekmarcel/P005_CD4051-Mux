@@ -28,8 +28,8 @@
 #include "cd4051.h"
 
 /***************************************************************************
-*  Function:		Setup(int number)
-*  Description:		Setup PORTD and the timer, this function need to be called at
+*  Function:		Setup()
+*  Description:		Setup PORTD, this function need to be called at
 *				the beginning of main.
 *  Receives:		Nothing
 *  Returns:		Nothing
@@ -37,7 +37,7 @@
 void Setup()
 {
 	/* Setup Port D */
-	/* Pins 0,1,2 as outputs, pin 3 till 5 as input */
+	/* Pins 0,1,2 and 3 as outputs, pin 4 till 5 as input */
 	DDRD = 0b00001111;
 }
 

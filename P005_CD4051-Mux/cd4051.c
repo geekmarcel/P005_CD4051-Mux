@@ -105,7 +105,7 @@ void InitializeCD4051(volatile BYTE* controlDirPort,
 }
 
 /***************************************************************************
-*  Function:		WriteChannel(ChannelNo channel, BOOL channelValue)
+*  Function:		WriteChannel(ChannelNoType channel, BOOL channelValue)
 *  Description:		Writes the given value to the channel, after the call the channel will
 *				remain selected and the IC enabled.
 *				Note an the usage, the written value will only be available on the channel output
@@ -113,7 +113,7 @@ void InitializeCD4051(volatile BYTE* controlDirPort,
 *				Calling the ReadChannel or this function again with a different channel number
 *				will clear the channel output and put it into tristate
 *
-*  Receives:		ChannelNo channel		:	Channel to select.
+*  Receives:		ChannelNoType channel	:	Channel to select.
 *				BOOL channelValue		:	Value to set.
 *  Returns:		Nothing
 ***************************************************************************/
@@ -149,11 +149,11 @@ void WriteChannel(ChannelNoType channel, BOOL channelValue)
 }
 
 /***************************************************************************
-*  Function:		BOOL ReadChannel(ChannelNo channel)
+*  Function:		BOOL ReadChannel(ChannelNoType channel)
 *  Description:		Reads the given channel by first selecting it and then reading it.
 *				After the call the channel will remain selected and the IC enabled.
 *
-*  Receives:		ChannelNo channel		:	Channel to select.
+*  Receives:		ChannelNoType channel	:	Channel to select.
 *  Returns:		Current state of the channel, high (TRUE) or low (FALSE).
 ***************************************************************************/
 BOOL ReadChannel(ChannelNoType channel)
@@ -186,11 +186,11 @@ BOOL ReadChannel(ChannelNoType channel)
 }
 
 /***************************************************************************
-*  Function:		SelectChannel(ChannelNo channel)
+*  Function:		SelectChannel(ChannelNoType channel)
 *  Description:		This function will select the channel by setting the Select A, B and C
 *				signals to 0 or 1.
 *
-*  Receives:		ChannelNo channel		:	Channel to select
+*  Receives:		ChannelNoType channel	:	Channel to select
 *  Returns:		Nothing
 ***************************************************************************/
 void SelectChannel(ChannelNoType channel)

@@ -127,6 +127,9 @@
     <None Include="Docs\cd4051b.pdf">
       <SubType>compile</SubType>
     </None>
+    <None Include="Docs\P005 CD4051 Analog Mux_bb.jpg">
+      <SubType>compile</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
