@@ -9,7 +9,11 @@
  * Date:			09-10-2015
  * Author:		Marcel van der Ven
  *
- * Hardware setup:	
+ * Hardware setup:		PORTD0		:	Select A signal, pin 11 of CD4051
+ *					PORTD1		:	Select B signal, pin 10 of CD4051
+ *					PORTD2		:	Select C signal, pin 9 of CD4051
+ *					PORTD3		:	Inhibit signal, pin 6 of CD4051
+ *					PORTD4		:	In/Out signal, pin 3 of CD4051	
  *
  * Note(s):
  *--------------------------------------------------------------------------------------------------------------------------------------------------------*/
